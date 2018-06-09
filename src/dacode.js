@@ -44,34 +44,13 @@ if ( havePointerLock ) {
 } else {
     instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
 }
+
 init();
 animate();
 
+// End of main()
+//
 function init() {
-
-    function initBirds() {
-        var geometry = new THREE.BirdGeometry();
-        // For Vertex and Fragment
-        birdUniforms = {
-            color: { value: new THREE.Color( 0xff2200 ) },
-            texturePosition: { value: null },
-            textureVelocity: { value: null },
-            time: { value: 1.0 },
-            delta: { value: 0.0 }
-        };
-        // ShaderMaterial
-        var material = new THREE.ShaderMaterial( {
-            uniforms:       birdUniforms,
-            vertexShader:   document.getElementById( 'birdVS' ).textContent,
-            fragmentShader: document.getElementById( 'birdFS' ).textContent,
-            side: THREE.DoubleSide
-        });
-        var birdMesh = new THREE.Mesh( geometry, material );
-        birdMesh.rotation.y = Math.PI / 2;
-        birdMesh.matrixAutoUpdate = false;
-        birdMesh.updateMatrix();
-        scene.add(birdMesh);
-    }
 
     scene = new THREE.Scene();
 
@@ -138,8 +117,6 @@ function init() {
     var skyboxGeom = new THREE.BoxGeometry( 5000, 5000, 5000, 1, 1, 1 );
     var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
     scene.add( skybox );
-
-    initBirds();
 
     ///////////////
     // controls ///
