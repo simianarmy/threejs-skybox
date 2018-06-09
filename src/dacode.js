@@ -9,6 +9,7 @@ var velocity = new THREE.Vector3();
 var direction = new THREE.Vector3();
 var blocker = document.getElementById( 'blocker' );
 var instructions = document.getElementById( 'instructions' );
+var birdUniforms;
 
 var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 if ( havePointerLock ) {
@@ -47,6 +48,31 @@ init();
 animate();
 
 function init() {
+
+    function initBirds() {
+        var geometry = new THREE.BirdGeometry();
+        // For Vertex and Fragment
+        birdUniforms = {
+            color: { value: new THREE.Color( 0xff2200 ) },
+            texturePosition: { value: null },
+            textureVelocity: { value: null },
+            time: { value: 1.0 },
+            delta: { value: 0.0 }
+        };
+        // ShaderMaterial
+        var material = new THREE.ShaderMaterial( {
+            uniforms:       birdUniforms,
+            vertexShader:   document.getElementById( 'birdVS' ).textContent,
+            fragmentShader: document.getElementById( 'birdFS' ).textContent,
+            side: THREE.DoubleSide
+        });
+        var birdMesh = new THREE.Mesh( geometry, material );
+        birdMesh.rotation.y = Math.PI / 2;
+        birdMesh.matrixAutoUpdate = false;
+        birdMesh.updateMatrix();
+        scene.add(birdMesh);
+    }
+
     scene = new THREE.Scene();
 
     ////////////
@@ -113,6 +139,8 @@ function init() {
     var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
     scene.add( skybox );
 
+    initBirds();
+
     ///////////////
     // controls ///
     ///////////////
@@ -170,7 +198,7 @@ function animate() {
         var delta = ( time - prevTime ) / 1000;
         velocity.x -= velocity.x * 10.0 * delta;
         velocity.z -= velocity.z * 10.0 * delta;
-        velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+        velocity.y -= 10.8 * 100.0 * delta; // 100.0 = mass
         velocity.y = Math.max(0, velocity.y);
         direction.z = Number( moveForward ) - Number( moveBackward );
         direction.x = Number( moveLeft ) - Number( moveRight );
